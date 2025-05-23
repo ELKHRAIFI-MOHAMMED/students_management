@@ -1,0 +1,57 @@
+{% extends 'student/base1.html' %} 
+ {% block content %}
+<div class="row">
+  <div class="col-12">
+    <h2>Students</h2>
+    <hr />
+    {% if students %}
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Enrollment Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td>{{ student.id }}</td>
+            <td>{{ student.first_name }}</td>
+            <td>{{ student.last_name }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.enrollment_date }}</td>
+            <td>
+              <a
+                href="{% url 'student-detail' student.id %}"
+                class="btn btn-sm btn-info"
+                >View</a
+              >
+              <a
+                href="{% url 'student-update' student.id %}"
+                class="btn btn-sm btn-primary"
+                >Edit</a
+              >
+              <a
+                href="{% url 'student-delete' student.id %}"
+                class="btn btn-sm btn-danger"
+                >Delete</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+      No students found. <a href="{% url 'student-create' %}">Add a student</a>.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

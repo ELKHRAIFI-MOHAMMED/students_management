@@ -1,0 +1,164 @@
+{% extends 'student/nav.html' %}
+
+{% block contentNav %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .form-card {
+        border-radius: 0.5rem;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+    .form-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+    .form-control-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
+    }
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .btn-submit {
+        transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="form-container">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 fw-bold text-dark mb-1">
+                    <i class="bi bi-journal-bookmark-fill text-primary me-2"></i>
+                    {% if field %}Update{% else %}Create{% endif %} Field of Study
+                </h1>
+                <p class="text-muted mb-0">
+                    {% if field %}Edit existing field details{% else %}Add a new academic field{% endif %}
+                </p>
+            </div>
+            <a href="{% url 'field_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card form-card">
+            <div class="card-header bg-primary text-white py-3 form-header">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Field Information
+                </h2>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Name Field -->
+                    <div class="mb-4">
+                        <label for="name" class="form-label">
+                            Field Name <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-bookmark text-primary"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                class="form-control form-control-lg {% if form.name.errors %}is-invalid{% endif %}" 
+                                id="name" 
+                                name="name" 
+                                value="{{ form.name.value|default:'' }}" 
+                                required
+                                placeholder="Computer Science, Biology, etc."
+                            >
+                            {% if form.name.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.name.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-text text-muted mt-1">
+                            Enter the official name of the academic field
+                        </div>
+                    </div>
+
+                    <!-- Additional Fields (example) -->
+                    <div class="mb-4">
+                        <label for="code" class="form-label">
+                            Field Code (Optional)
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="code" 
+                            name="code" 
+                            value="{{ form.code.value|default:'' }}" 
+                            placeholder="e.g. CS, BIO, MATH"
+                        >
+                        <div class="form-text text-muted mt-1">
+                            Short code or abbreviation for the field
+                        </div>
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="mb-4">
+                        <label for="description" class="form-label">
+                            Description (Optional)
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="description" 
+                            name="description" 
+                            rows="3"
+                            placeholder="Brief description of the field..."
+                        >{{ form.description.value|default:'' }}</textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <a href="{% url 'field_list' %}" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-x-circle me-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 btn-submit">
+                            <i class="bi bi-save me-1"></i>
+                            {% if field %}Update Field{% else %}Create Field{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Form validation
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+    
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            
+            form.classList.add('was-validated')
+        }, false)
+    })
+})
+</script>
+{% endblock %}

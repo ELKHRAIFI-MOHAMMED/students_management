@@ -1,0 +1,42 @@
+{% extends 'student/base.html' %} 
+
+
+{% block contentNav %}
+<style>
+  body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 30px;
+  }
+  .footer {
+    padding-top: 20px;
+    margin-top: 40px;
+    border-top: 1px solid #e5e5e5;
+    color: #777;
+  }
+</style>
+<body>
+  <div class="container">
+    <div class="header d-flex justify-content-between align-items-center">
+      <h3 class="text-muted">Student Management System</h3>
+      <nav class="nav nav-pills">
+        <a class="nav-link" href="{% url 'student-list' %}">Students</a>
+        <a class="nav-link" href="{% url 'student-create' %}">Add Student</a>
+      </nav>
+    </div>
+
+    <!-- ✅ Le block content est déclaré une seule fois ici -->
+    <div class="content">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    <div class="footer text-center">
+      &copy; 2025 Student Management System
+    </div>
+  </div>
+{% endblock %}

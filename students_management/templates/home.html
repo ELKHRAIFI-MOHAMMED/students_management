@@ -1,0 +1,570 @@
+{% extends 'base.html' %}
+
+{% block contentNav %}
+<!-- Custom CSS -->
+<style>
+  .welcome-section {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    padding: 5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(37, 117, 252, 0.3);
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-section::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+  }
+
+  .welcome-section h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .welcome-section .lead {
+    font-size: 1.5rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.9;
+    position: relative;
+  }
+
+  .feature-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .feature-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stats-card {
+    border-left: 4px solid #2575fc;
+    transition: all 0.3s ease;
+  }
+
+  .stats-card:hover {
+    transform: translateY(-5px);
+  }
+
+  @media (max-width: 768px) {
+    .welcome-section h1 {
+      font-size: 2.5rem;
+    }
+    .welcome-section .lead {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<!-- Welcome Section -->
+<section class="welcome-section text-center my-5">
+  <div class="container position-relative">
+    <h1 class="display-4 fw-bold">🎓 Student Management System</h1>
+    <p class="lead">Powerful tools for managing student information and academic records</p>
+    
+    <div class="mt-4">
+      <a href="{% url 'student-list' %}" class="btn btn-light btn-lg px-4 py-2 me-3 fw-bold">
+        <i class="fas fa-users me-2"></i> View Students
+      </a>
+      <a href="{% url 'student-create' %}" class="btn btn-outline-light btn-lg px-4 py-2 fw-bold">
+        <i class="fas fa-user-plus me-2"></i> Add New Student
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Stats -->
+<div class="container mb-5">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="stats-card p-4 bg-white rounded shadow-sm">
+        <div class="d-flex align-items-center">
+          <div class="me-3 text-primary">
+            <i class="fas fa-users fa-2x"></i>
+          </div>
+          <div>
+            <h3 class="mb-0 fw-bold">{{ total_students }}</h3>
+            <p class="mb-0 text-muted">Total Students</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stats-card p-4 bg-white rounded shadow-sm">
+        <div class="d-flex align-items-center">
+          <div class="me-3 text-success">
+            <i class="fas fa-book fa-2x"></i>
+          </div>
+          <div>
+            <h3 class="mb-0 fw-bold">{{ total_modules }}</h3>
+            <p class="mb-0 text-muted">Active Modules</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stats-card p-4 bg-white rounded shadow-sm">
+        <div class="d-flex align-items-center">
+          <div class="me-3 text-warning">
+            <i class="fas fa-chalkboard-teacher fa-2x"></i>
+          </div>
+          <div>
+            <h3 class="mb-0 fw-bold">{{ total_fields }}</h3>
+            <p class="mb-0 text-muted">Teaching Fields</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Optional: Detailed Statistics -->
+<div class="container mb-5">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+          <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Students by Field</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            {% for field in students_by_field %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ field.name }}
+              <span class="badge bg-primary rounded-pill">{{ field.student_count }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Modules by Field</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            {% for field in modules_by_field %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ field.name }}
+              <span class="badge bg-success rounded-pill">{{ field.module_count }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Features Section -->
+<div class="container mb-5">
+  <h2 class="text-center mb-5 fw-bold">Key Features</h2>
+  <div class="row g-4">
+    <!-- Feature 1 -->
+    <div class="col-lg-4 col-md-6">
+      <div class="feature-card text-center">
+        <div class="feature-icon">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <h3 class="fw-bold mb-3">Student Management</h3>
+        <p class="text-muted">
+          Comprehensive tools for managing student profiles, including enrollment, attendance, and personal information.
+        </p>
+        
+        <!-- Learn More Button that triggers modal -->
+        <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#studentManagementModal">
+          Learn More
+        </button>
+      </div>
+    </div>
+    
+    <!-- Modal for Detailed Information -->
+    <div class="modal fade" id="studentManagementModal" tabindex="-1" aria-labelledby="studentManagementModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="studentManagementModalLabel">
+              <i class="fas fa-user-graduate me-2"></i>Student Management Features
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                  <div class="me-3 text-primary">
+                    <i class="fas fa-id-card fa-2x"></i>
+                  </div>
+                  <div>
+                    <h5>Student Profiles</h5>
+                    <p class="text-muted mb-0">
+                      Complete student records with personal details, contact information, academic history, and documents.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                  <div class="me-3 text-success">
+                    <i class="fas fa-user-plus fa-2x"></i>
+                  </div>
+                  <div>
+                    <h5>Registration System</h5>
+                    <p class="text-muted mb-0">
+                      Simplified registration process using digital forms, document uploads, and automatic class assignments.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                  <div class="me-3 text-info">
+                    <i class="fas fa-chart-bar fa-2x"></i>
+                  </div>
+                  <div>
+                    <h5>Track</h5>
+                    <p class="text-muted mb-0">
+                      Real-time scoring monitoring with a reporting and notification system for students and parents.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                  <div class="me-3 text-warning">
+                    <i class="fas fa-chart-line fa-2x"></i>
+                  </div>
+                  <div>
+                    <h5>Performance Analytics</h5>
+                    <p class="text-muted mb-0">
+                      Visual dashboards showing academic progress, engagement metrics, and areas for improvement.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="alert alert-primary">
+              <div class="d-flex">
+                <div class="me-3">
+                  <i class="fas fa-cogs fa-2x"></i>
+                </div>
+                <div>
+                  <h5>Advanced Features</h5>
+                  <ul class="mb-0">
+                    <li>Import large amounts of student data via CSV/Excel</li>
+                    <li>Create customizable student IDs</li>
+                    <li>Simplify communication</li>
+                    <li>Document expiration alerts</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="{% url 'student-list' %}" class="btn btn-primary me-2">
+              <i class="fas fa-external-link-alt me-1"></i> Access Student Management
+            </a>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Feature 2 - Grade Calculation -->
+<div class="col-lg-4 col-md-6">
+  <div class="feature-card text-center">
+    <div class="feature-icon">
+      <i class="fas fa-calculator"></i>
+    </div>
+    <h3 class="fw-bold mb-3">Grade Calculation</h3>
+    <p class="text-muted">
+      Automated grade calculation with support for multiple evaluation methods and reporting.
+    </p>
+    <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#gradeCalculationModal">
+      Learn More
+    </button>
+  </div>
+</div>
+
+<!-- Grade Calculation Modal -->
+<div class="modal fade" id="gradeCalculationModal" tabindex="-1" aria-labelledby="gradeCalculationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="gradeCalculationModalLabel">
+          <i class="fas fa-calculator me-2"></i>Grade Calculation Features
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <div class="d-flex">
+              <div class="me-3 text-success">
+                <i class="fas fa-percentage fa-2x"></i>
+              </div>
+              <div>
+                <h5>Automated Grading</h5>
+                <p class="text-muted mb-0">
+                  Automatic calculation of final grades based on customizable evaluation criteria and weightings.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <div class="d-flex">
+              <div class="me-3 text-info">
+                <i class="fas fa-balance-scale fa-2x"></i>
+              </div>
+              <div>
+                <h5>Multiple Evaluation Methods</h5>
+                <p class="text-muted mb-0">
+                  Support for exams, assignments, projects, and participation with customizable weightings.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <div class="d-flex">
+              <div class="me-3 text-warning">
+                <i class="fas fa-file-export fa-2x"></i>
+              </div>
+              <div>
+                <h5>Reporting Tools</h5>
+                <p class="text-muted mb-0">
+                  Generate detailed grade reports in multiple formats (PDF, Excel) for students and administration.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <div class="d-flex">
+              <div class="me-3 text-primary">
+                <i class="fas fa-bell fa-2x"></i>
+              </div>
+              <div>
+                <h5>Grade Alerts</h5>
+                <p class="text-muted mb-0">
+                  Automatic notifications for students and parents when new grades are posted.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="alert alert-success">
+          <div class="d-flex">
+            <div class="me-3">
+              <i class="fas fa-star fa-2x"></i>
+            </div>
+            <div>
+              <h5>Advanced Features</h5>
+              <ul class="mb-0">
+                <li>Curve grading options</li>
+                <li>Rubric-based assessment</li>
+                <li>Grade dispute resolution workflow</li>
+                <li>Historical grade comparison</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="" class="btn btn-success me-2">
+          <i class="fas fa-external-link-alt me-1"></i> Access Grade Center
+        </a>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    <!-- Feature 3 -->
+    <!-- Feature 3 - Performance Analytics -->
+<div class="col-lg-4 col-md-6">
+  <div class="feature-card text-center">
+    <div class="feature-icon">
+      <i class="fas fa-chart-line"></i>
+    </div>
+    <h3 class="fw-bold mb-3">Performance Analytics</h3>
+    <p class="text-muted">
+      Visual dashboards and reports to track student performance and institutional metrics.
+    </p>
+    <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#analyticsModal">
+      Learn More
+    </button>
+  </div>
+</div>
+
+<!-- Performance Analytics Modal -->
+<div class="modal fade" id="analyticsModal" tabindex="-1" aria-labelledby="analyticsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="analyticsModalLabel">
+          <i class="fas fa-chart-line me-2"></i>Performance Analytics Features
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <div class="d-flex">
+              <div class="me-3 text-info">
+                <i class="fas fa-tachometer-alt fa-2x"></i>
+              </div>
+              <div>
+                <h5>Real-Time Dashboards</h5>
+                <p class="text-muted mb-0">
+                  Interactive dashboards showing key performance indicators for students and classes.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <div class="d-flex">
+              <div class="me-3 text-primary">
+                <i class="fas fa-user-graduate fa-2x"></i>
+              </div>
+              <div>
+                <h5>Student Progress Tracking</h5>
+                <p class="text-muted mb-0">
+                  Detailed views of individual student progress across all subjects and competencies.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <div class="d-flex">
+              <div class="me-3 text-success">
+                <i class="fas fa-chart-pie fa-2x"></i>
+              </div>
+              <div>
+                <h5>Class Statistics</h5>
+                <p class="text-muted mb-0">
+                  Comparative analysis of class performance with historical data benchmarks.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <div class="d-flex">
+              <div class="me-3 text-warning">
+                <i class="fas fa-project-diagram fa-2x"></i>
+              </div>
+              <div>
+                <h5>Predictive Analytics</h5>
+                <p class="text-muted mb-0">
+                  Early identification of at-risk students using performance trend analysis.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="alert alert-info">
+          <div class="d-flex">
+            <div class="me-3">
+              <i class="fas fa-lightbulb fa-2x"></i>
+            </div>
+            <div>
+              <h5>Advanced Features</h5>
+              <ul class="mb-0">
+                <li>Custom report builder</li>
+                <li>Export to multiple formats (PDF, Excel, PowerPoint)</li>
+                <li>Automated report scheduling</li>
+                <li>API access for integration</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="" class="btn btn-info me-2">
+          <i class="fas fa-external-link-alt me-1"></i> View Analytics Dashboard
+        </a>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+
+
+<!-- Recent Activity -->
+
+
+<!-- Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+
+<script>
+  // Animation for cards on scroll
+  document.addEventListener('DOMContentLoaded', function() {
+    const featureCards = document.querySelectorAll('.feature-card');
+    
+    const animateOnScroll = () => {
+      featureCards.forEach((card, index) => {
+        const cardPosition = card.getBoundingClientRect().top;
+        const screenPosition = window.innerHeight / 1.3;
+        
+        if (cardPosition < screenPosition) {
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, index * 200);
+        }
+      });
+    };
+    
+    // Set initial state
+    featureCards.forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'all 0.5s ease';
+    });
+    
+    window.addEventListener('scroll', animateOnScroll);
+    animateOnScroll(); // Run once on load
+  });
+</script>
+{% endblock %}

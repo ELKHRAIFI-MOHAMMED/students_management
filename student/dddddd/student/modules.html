@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Modules</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary">Ajouter Module</button>
+</form>
+<ul class="list-group mt-4">
+    {% for module in modules %}
+        <li class="list-group-item">{{ module.name }} - {{ module.filiere.name }}</li>
+    {% empty %}
+        <li class="list-group-item">Aucun module</li>
+    {% endfor %}
+</ul>
+{% endblock %}

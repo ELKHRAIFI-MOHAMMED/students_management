@@ -1,0 +1,172 @@
+{% extends 'student/nav.html' %}
+
+{% block contentNav %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Form Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h3 mb-0 fw-bold">
+                        <i class="bi bi-collection me-2 text-primary"></i>
+                        {% if form.instance.pk %}Modifier la Classe{% else %}Créer une Nouvelle Classe{% endif %}
+                    </h2>
+                    <p class="text-muted mb-0">
+                        {% if form.instance.pk %}Mettre à jour les détails de la classe{% else %}Ajouter une nouvelle classe au système{% endif %}
+                    </p>
+                </div>
+                <a href="{% url 'class-list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Retour à la liste
+                </a>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom-0 py-3">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Informations de la Classe
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Name Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.name.id_for_label }}" class="form-label fw-bold">
+                                Nom de la Classe <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg {% if form.name.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.name.id_for_label }}" 
+                                   name="{{ form.name.name }}" 
+                                   value="{{ form.name.value|default:'' }}"
+                                   required
+                                   placeholder="Ex: Terminale S, Première ES, etc.">
+                            {% if form.name.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.name.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="form-text text-muted mt-1">
+                                Entrez le nom complet de la classe (niveau + spécialité si applicable)
+                            </div>
+                        </div>
+
+                        <!-- Duration Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.years.id_for_label }}" class="form-label fw-bold">
+                                Durée (années) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control {% if form.years.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.years.id_for_label }}" 
+                                   name="{{ form.years.name }}" 
+                                   value="{{ form.years.value|default:'' }}"
+                                   
+                                   required>
+                            {% if form.years.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.years.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Field of Study Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.field_of_study.id_for_label }}" class="form-label fw-bold">
+                                Filière <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select {% if form.field_of_study.errors %}is-invalid{% endif %}" 
+                                    id="{{ form.field_of_study.id_for_label }}" 
+                                    name="{{ form.field_of_study.name }}"
+                                    required>
+                                <option value="" disabled selected>-- Sélectionnez une filière --</option>
+                                {% for value, label in form.field_of_study.field.choices %}
+                                    <option value="{{ value }}" {% if form.field_of_study.value == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.field_of_study.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.field_of_study.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="form-text text-muted mt-1">
+                                La filière détermine les modules associés à cette classe
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-between border-top pt-4 mt-3">
+                            <a href="{% url 'class-list' %}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-x-circle me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save me-1"></i> Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 0.5rem;
+    }
+    .form-control-lg {
+        padding: 0.75rem 1rem;
+    }
+    .form-label {
+        margin-bottom: 0.5rem;
+    }
+    .invalid-feedback {
+        display: block;
+    }
+    .btn-primary {
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+    }
+</style>
+
+<script>
+// Form validation
+document.addEventListener('DOMContentLoaded', function() {
+    // Enable Bootstrap validation
+    var forms = document.querySelectorAll('.needs-validation')
+    
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+
+    // Add confirmation when leaving page with unsaved changes
+    const form = document.querySelector('form');
+    let formChanged = false;
+    
+    form.querySelectorAll('input, select, textarea').forEach(element => {
+        element.addEventListener('change', () => {
+            formChanged = true;
+        });
+    });
+
+    window.addEventListener('beforeunload', (e) => {
+        if (formChanged) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+});
+</script>
+{% endblock %}

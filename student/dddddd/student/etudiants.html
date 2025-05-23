@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Étudiants</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary">Ajouter Étudiant</button>
+</form>
+<table class="table table-bordered mt-4">
+    <thead>
+        <tr>
+            <th>Nom Complet</th>
+            <th>Email</th>
+            <th>Numéro</th>
+            <th>Genre</th>
+            <th>Classe</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for etudiant in etudiants %}
+        <tr>
+            <td>{{ etudiant.first_name }} {{ etudiant.last_name }}</td>
+            <td>{{ etudiant.email }}</td>
+            <td>{{ etudiant.phone }}</td>
+            <td>{{ etudiant.get_gender_display }}</td>
+            <td>{{ etudiant.classe.name }}</td>
+            <td><a href="{% url 'etudiant_notes' etudiant.id %}">Voir Notes</a></td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6">Aucun étudiant</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

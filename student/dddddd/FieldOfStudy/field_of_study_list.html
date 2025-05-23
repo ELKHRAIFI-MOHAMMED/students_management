@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field of Study List</title>
+</head>
+<body>
+    <h1>Field of Study List</h1>
+    <ul>
+        {% for field in fields_of_study %}
+            <li>
+                <a href="{% url 'field_of_study_edit' pk=field.pk %}">{{ field.name }}</a> 
+                <a href="{% url 'field_of_study_delete' pk=field.pk %}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'field_of_study_create' %}">Add New Field of Study</a>
+</body>
+</html>

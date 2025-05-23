@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Moyenne Générale de la Classe {{ classe.name }}</h2>
+<p><strong>Moyenne Globale:</strong> {{ moyenne_globale|default:"Non calculée" }}</p>
+
+<h3>Moyenne par Module</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Module</th>
+            <th>Moyenne</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for m in moyennes_modules %}
+        <tr>
+            <td>{{ m.module__name }}</td>
+            <td>{{ m.moy|floatformat:2 }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

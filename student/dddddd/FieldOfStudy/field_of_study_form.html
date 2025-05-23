@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ form.instance.pk|default:"New" }} Field of Study</title>
+</head>
+<body>
+    <h1>{{ form.instance.pk|default:"Create New" }} Field of Study</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'field_of_study_list' %}">Back to List</a>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{% extends 'student/nav.html' %}
+
+{% block contentNav %}
+<style>
+    .grade-cell {
+        min-width: 80px;
+    }
+    .average-cell {
+        font-weight: 500;
+    }
+    .module-name {
+        font-weight: 500;
+    }
+</style>
+<body class="bg-light">
+    <div class="container py-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Résultats de <span class="fw-semibold">{{ student.first_name }} {{ student.last_name }}</span></h2>
+            </div>
+            
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-4">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Module</th>
+                                <th class="text-center grade-cell">Note 1</th>
+                                <th class="text-center grade-cell">Note 2</th>
+                                <th class="text-center grade-cell">Note 3</th>
+                                <th class="text-center grade-cell">Note 4</th>
+                                <th class="text-center average-cell">Moyenne</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in modules_with_grades %}
+                                <tr>
+                                    <td class="module-name">{{ item.module.name }}</td>
+                                    {% for note in item.notes %}
+                                        <td class="text-center">
+                                            {% if note is not None %}
+                                                {{ note|floatformat:2 }}
+                                            {% else %}
+                                                <span class="text-muted">--</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    <td class="text-center fw-semibold average-cell">
+                                        {% if item.moyenne is not None %}
+                                            {% if item.moyenne >= 10 %}
+                                                <span class="text-success">{{ item.moyenne|floatformat:2 }}</span>
+                                            {% else %}
+                                                <span class="text-danger">{{ item.moyenne|floatformat:2 }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-end align-items-center mt-4 p-3 bg-light rounded">
+                    <h4 class="mb-0 me-3">Moyenne Générale :</h4>
+                    <span class="badge {% if moyenne_generale >= 10 %}bg-success{% else %}bg-danger{% endif %} fs-5 py-2 px-3">
+                        {{ moyenne_generale|floatformat:2 }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-4 text-center text-muted small">
+            Généré le {% now "j F Y à H:i" %}
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+{% endblock %}

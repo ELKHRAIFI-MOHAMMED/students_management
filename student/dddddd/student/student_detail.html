@@ -1,0 +1,69 @@
+{% extends 'student/base1.html' %}
+
+{% block title %}
+  {{ student.first_name }} {{ student.last_name }} | {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card shadow rounded-3">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">{{ student.first_name }} {{ student.last_name }}</h3>
+        <div>
+          <a href="{% url 'student-update' student.id %}" class="btn btn-light btn-sm">Edit</a>
+          <a href="{% url 'student-delete' student.id %}" class="btn btn-danger btn-sm">Delete</a>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-4">📧 Email:</dt>
+          <dd class="col-sm-8">{{ student.email }}</dd>
+
+          <dt class="col-sm-4">📞 Phone:</dt>
+          <dd class="col-sm-8">{{ student.phone|default:"Not provided" }}</dd>
+
+          <dt class="col-sm-4">🎂 Date of Birth:</dt>
+          <dd class="col-sm-8">{{ student.date_of_birth }}</dd>
+
+          <dt class="col-sm-4">🚻 Gender:</dt>
+          <dd class="col-sm-8">{{ student.get_gender_display }}</dd>
+
+          <dt class="col-sm-4">🏠 Address:</dt>
+          <dd class="col-sm-8">{{ student.address|default:"Not provided"|linebreaks }}</dd>
+
+          <dt class="col-sm-4">📅 Enrollment Date:</dt>
+          <dd class="col-sm-8">{{ student.enrollment_date }}</dd>
+        </dl>
+
+        <hr>
+
+        <h4 class="text-center text-success">🎯 General Average: 
+          <span class="badge bg-success fs-5">{{ object.moyenne_generale|default:"Not calculated" }}</span>
+        </h4>
+
+        <h5 class="mt-4">📚 Grades:</h5>
+        <ul class="list-group">
+          {% for note in object.notes.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ note.module_name }}
+              <span class="badge bg-primary rounded-pill">{{ note.note }}</span>
+            </li>
+          {% empty %}
+            <li class="list-group-item">No grades available.</li>
+          {% endfor %}
+        </ul>
+
+        <div class="mt-4 text-center">
+          <a href="{% url 'add-note' object.pk %}" class="btn btn-outline-primary">➕ Add Grade</a>
+        </div>
+      </div>
+
+      <div class="card-footer text-center">
+        <a href="{% url 'student-list' %}" class="btn btn-secondary">⬅ Back to List</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
