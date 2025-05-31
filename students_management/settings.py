@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-w-l(3u-in(jn4kszn)i)z7)hd74ax3od(x-i2i@4b+v(^#)n)&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['vercel.app']
 
 
 # Application definition
@@ -81,14 +81,21 @@ WSGI_APPLICATION = 'students_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',  # MySQL backend
+#         'NAME': 'students_management',          # Name of the database
+#         'USER': 'root',         # MySQL username
+#         'PASSWORD': 'root',     # MySQL password
+#         'HOST': 'localhost',                   # MySQL host
+#         'PORT': '3306',                        # MySQL port
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # MySQL backend
-        'NAME': 'students_management',          # Name of the database
-        'USER': 'root',         # MySQL username
-        'PASSWORD': 'root',     # MySQL password
-        'HOST': 'localhost',                   # MySQL host
-        'PORT': '3306',                        # MySQL port
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Le fichier sera créé à la racine de ton projet
     }
 }
 
