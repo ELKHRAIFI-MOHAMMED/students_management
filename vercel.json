@@ -1,14 +1,14 @@
 
 {
     "builds": [{
-        "src": "djangoprojectname/wsgi.py",
+        "src": "students_management/wsgi.py",
         "use": "@vercel/python",
         "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
     }],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "djangoprojectname/wsgi.py"
+            "dest": "students_management/wsgi.py"
         }
     ]
 }
