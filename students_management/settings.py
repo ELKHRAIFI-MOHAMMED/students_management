@@ -94,10 +94,25 @@ WSGI_APPLICATION = 'students_management.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Le fichier sera créé à la racine de ton projet
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',  # Le nom de la base de données
+        'USER': 'postgres.glpriphfsispkwlciqbb',  # Très important : c'est un nom d'utilisateur complet de Supabase
+        'PASSWORD': 'ISXnPkPLYZUTvVh9',
+        'HOST': 'aws-0-us-east-1.pooler.supabase.com',
+        'PORT': '6543',
+        'OPTIONS': {
+            'sslmode': 'require',
+        }
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Le fichier sera créé à la racine de ton projet
+#     }
+# }
 
 
 # Password validation
