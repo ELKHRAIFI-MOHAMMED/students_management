@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os # à ajouter
 import pymysql
+import psycopg2
+from dotenv import load_dotenv
+load_dotenv()
+
 
 pymysql.install_as_MySQLdb()
 
@@ -95,16 +99,17 @@ WSGI_APPLICATION = 'students_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',  # Le nom de la base de données
-        'USER': 'postgres.glpriphfsispkwlciqbb',  # Très important : c'est un nom d'utilisateur complet de Supabase
-        'PASSWORD': 'ISXnPkPLYZUTvVh9',
-        'HOST': 'aws-0-us-east-1.pooler.supabase.com',
-        'PORT': '6543',
+        'NAME': os.getenv("dbname"),
+        'USER': os.getenv("user"),
+        'PASSWORD': os.getenv("password"),
+        'HOST': os.getenv("host"),
+        'PORT': os.getenv("port"),
         'OPTIONS': {
-            'sslmode': 'require',
+            'sslmode': 'require',  # Supabase nécessite SSL
         }
     }
 }
+
 
 
 # DATABASES = {
